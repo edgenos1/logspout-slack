@@ -64,10 +64,11 @@ func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 		User:     a.slackUser,
 		Username: a.slackUsername,
 	}
+	msgOptionPostMsgParams := MsgOptionPostMessageParameters(msgParams)
 	fmt.Printf("%+v", a)
 	for message := range logstream {
 		if ok, _ := regexp.MatchString(a.messageFilter, message.Data); ok {
-			a.slackClient.PostMessage(a.slackChannel, slack.MsgOptionText(message.Data, false), msgParams)
+			a.slackClient.PostMessage(a.slackChannel, slack.MsgOptionText(message.Data, false), msgOptionPostMsgParams)
 		}
 	}
 }
