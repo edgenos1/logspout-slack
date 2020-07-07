@@ -3,8 +3,8 @@
   version = "3.2.11"
 
 [[constraint]]
-  name = "github.com/slack-go/slack"
-  version = "0.6.5"
+  name = "github.com/nlopes/slack"
+  version = "0.6.0"
 
 [prune]
   go-tests = true

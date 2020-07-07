@@ -7,7 +7,7 @@ import (
 	"regexp"
 
 	"github.com/gliderlabs/logspout/router"
-	"github.com/slack-go/slack"
+	"github.com/nlopes/slack"
 )
 
 func init() {

@@ -122,6 +122,19 @@
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:3b68aaa159109450b5c0c79e40a02347db7ceb10bb8758687898f7e57d355cf7"
+  name = "github.com/nlopes/slack"
+  packages = [
+    ".",
+    "internal/errorsx",
+    "internal/timex",
+    "slackutilsx",
+  ]
+  pruneopts = "UT"
+  revision = "1af34b6bda3d43878255fff7bd2884ea0c23295e"
+  version = "v0.6.0"
+
+[[projects]]
   digest = "1:ee4d4af67d93cc7644157882329023ce9a7bcfce956a079069a9405521c7cc8d"
   name = "github.com/opencontainers/go-digest"
   packages = ["."]
@@ -168,19 +181,6 @@
   version = "v1.0.5"
 
 [[projects]]
-  digest = "1:cc7b196c5653d7af2afd96c3368da98082dec0b90ff69a70dda0a3e6cd14d143"
-  name = "github.com/slack-go/slack"
-  packages = [
-    ".",
-    "internal/errorsx",
-    "internal/timex",
-    "slackutilsx",
-  ]
-  pruneopts = "UT"
-  revision = "625ac52a326e62fd8409197a8fba909d2386cfd4"
-  version = "v0.6.5"
-
-[[projects]]
   branch = "master"
   digest = "1:3f3a05ae0b95893d90b9b3b5afdb79a9b3d96e4e36e099d841ae602e4aca0da8"
   name = "golang.org/x/crypto"
@@ -215,7 +215,7 @@
   analyzer-version = 1
   input-imports = [
     "github.com/gliderlabs/logspout/router",
-    "github.com/slack-go/slack",
+    "github.com/nlopes/slack",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1
