@@ -3,6 +3,7 @@ package slack
 import (
 	"os"
 	"regexp"
+	"fmt"
 
 	"github.com/gliderlabs/logspout/router"
 	"github.com/slack-go/slack"
@@ -46,6 +47,7 @@ type SlackAdapter struct {
 func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 	for message := range logstream {
 		if ok, _ := regexp.MatchString(a.messageFilter, message.Data); ok {
+			fmt.Printf("%+v", message.Data)
 			msg := slack.WebhookMessage{
 				Text:     message.Data,
 			}
