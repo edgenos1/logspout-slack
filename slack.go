@@ -22,7 +22,7 @@ func getopt(name, dfault string) string {
 
 // NewSlackAdapter creates a Slack adapter.
 func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
-	slackWebhook := getopt("SLACK_WEBHOOK_URL", route.Options["slack_webhook_url"])
+	slackWebhook := getopt("SLACK_WEBHOOK_URL", route.Address)
 	messageFilter := getopt("SLACK_MESSAGE_FILTER", route.Options["slack_message_filter"])
 	if messageFilter == "" {
 		messageFilter = "*"
