@@ -1,3 +1,6 @@
+env:
+  global:
+    - CC_TEST_REPORTER_ID=d4450fbe9bb699bf1ede8aef7f510f0fc02596f0fb1f4e0670e33f1767b238d7
 language: go
 go:
 - 1.10
