@@ -1,8 +1,6 @@
 package slack
 
 import (
-	"errors"
-	"fmt"
 	"os"
 	"regexp"
 
@@ -51,7 +49,7 @@ func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 			msg := slack.WebhookMessage{
 				Text:     message.Data,
 			}
-			slack.PostWebhook(a.slackWebhook, msg)
+			slack.PostWebhook(a.slackWebhook, &msg)
 		}
 	}
 }
