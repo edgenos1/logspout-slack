@@ -32,8 +32,8 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 
 	return &SlackAdapter{
 		slackWebhook:   slackWebhook,
-		messageFilter: messageFilter,
-		route:         route,
+		messageFilter: 	messageFilter,
+		route:         	route,
 	}, nil
 }
 
@@ -48,9 +48,10 @@ type SlackAdapter struct {
 func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 	for message := range logstream {
 		if ok, _ := regexp.MatchString(a.messageFilter, message.Data); ok {
-			slack.PostWebhook(a.slackWebhook, slack.WebhookMessage{
+			msg := slack.WebhookMessage{
 				Text:     message.Data
-			})
+			}
+			slack.PostWebhook(a.slackWebhook, msg)
 		}
 	}
 }
