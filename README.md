@@ -74,3 +74,33 @@ networks:
     name: ${DOCKER_NETWORK}
     external: true
 ```
+
+## Configuration options
+
+You can use the standard logspout filters to filter container names and output types:
+```
+docker run --name="logspout" \
+	--volume=/var/run/docker.sock:/var/run/docker.sock \
+	logspout:v3.2.11 \
+	slack://your_webhook_url?filter.sources=stdout%2Cstderr&filter.name=*my_container*'
+```
+
+*Note: you must URL-encode parameter values such as the comma and the name filter is not a regex but rather a [path pattern](https://godoc.org/path#Match)*
+
+You can set your webhook URL using the `SLACK_WEBHOOK_URL` environment variable:
+```
+docker run --name="logspout" \
+	--volume=/var/run/docker.sock:/var/run/docker.sock \
+	-e SLACK_WEBHOOK_URL="xxx" \
+	logspout:v3.2.11 \
+	slack://localhost
+```
+
+You can filter the messages to be sent to Slack using a [regex](https://godoc.org/regexp#Regexp.MatchString) in the `SLACK_MESSAGE_FILTER` environment variable:
+```
+docker run --name="logspout" \
+	--volume=/var/run/docker.sock:/var/run/docker.sock \
+	-e SLACK_MESSAGE_FILTER=".*error" \
+	logspout:v3.2.11 \
+	slack://your_webhook_url
+```
