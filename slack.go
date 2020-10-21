@@ -26,7 +26,7 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 	slackWebhook := getopt("SLACK_WEBHOOK_URL", route.Address)
 	messageFilter := getopt("SLACK_MESSAGE_FILTER", route.Options["slack_message_filter"])
 	if messageFilter == "" {
-		messageFilter = "*"
+		messageFilter = ".*?"
 	}
 
 	fmt.Printf("Creating Slack adapter with filter: %v\n", messageFilter)
