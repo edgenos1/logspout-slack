@@ -47,6 +47,9 @@ type SlackAdapter struct {
 // Stream implements the router.LogAdapter interface.
 func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 	for message := range logstream {
+		if message.Data == "" {
+			continue
+		}
 		fmt.Printf("Filtering message for slack: %+v\n", message.Data)
 		if ok, _ := regexp.MatchString(a.messageFilter, message.Data); ok {
 			fmt.Printf("Sending slack message: %+v\n", message.Data)
