@@ -29,7 +29,7 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 		messageFilter = "*"
 	}
 
-	fmt.Printf("Creating Slack adapter with filter: %v", messageFilter)
+	fmt.Printf("Creating Slack adapter with filter: %v\n", messageFilter)
 	return &SlackAdapter{
 		slackWebhook:   slackWebhook,
 		messageFilter: 	messageFilter,
@@ -47,9 +47,8 @@ type SlackAdapter struct {
 // Stream implements the router.LogAdapter interface.
 func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 	for message := range logstream {
-		fmt.Printf("Message: %+v", message)
 		if ok, _ := regexp.MatchString(a.messageFilter, message.Data); ok {
-			fmt.Printf("Slack text: %+v", message.Data)
+			fmt.Printf("Sending slack message: %+v\n", message.Data)
 			msg := slack.WebhookMessage{
 				Text:     message.Data,
 			}
