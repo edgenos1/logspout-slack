@@ -5,6 +5,7 @@ import (
 	"regexp"
 	"fmt"
 	"strings"
+	 "bytes"
 	"text/template"
 	
 	"github.com/gliderlabs/logspout/router"
@@ -43,26 +44,25 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 	if messageFilter == "" {
 		messageFilter = ".*?"
 	}
-	var err error
-	titleTemplate := getopt("SLACK_TITLE_TEMPLATE", "{{ .Message.Container.Name}}")
-	messageTemplate := getopt("SLACK_MESSAGE_TEMPLATE", "{{ .Message.Data}}")
-	linkTemplate := getopt("SLACK_LINK_TEMPLATE", "")
-	colorTemplate := getopt("SLACK_COLOR_TEMPLATE", "danger")
-	titleTemplate, err = template.New("title").Parse(titleTemplate)
-	if err != nil {
-		panic(err)
+	titleTemplateExpression := getopt("SLACK_TITLE_TEMPLATE", "{{ .Message.Container.Name}}")
+	messageTemplateExpression := getopt("SLACK_MESSAGE_TEMPLATE", "{{ .Message.Data}}")
+	linkTemplateExpression := getopt("SLACK_LINK_TEMPLATE", "")
+	colorTemplateExpression := getopt("SLACK_COLOR_TEMPLATE", "danger")
+	titleTemplate, errTitle := template.New("title").Parse(titleTemplate)
+	if errTitle != nil {
+		panic(errTitle)
 	}
-	messageTemplate, err = template.New("message").Parse(messageTemplate)
-	if err != nil {
-		panic(err)
+	messageTemplate, errMessage := template.New("message").Parse(messageTemplate)
+	if errMessage != nil {
+		panic(errMessage)
 	}
-	linkTemplate, err = template.New("link").Parse(messageTemplate)
-	if err != nil {
-		panic(err)
+	linkTemplate, errLink := template.New("link").Parse(messageTemplate)
+	if errLink != nil {
+		panic(errLink)
 	}
-	colorTemplate, err = template.New("color").Parse(messageTemplate)
-	if err != nil {
-		panic(err)
+	colorTemplate, errColor := template.New("color").Parse(messageTemplate)
+	if errColor != nil {
+		panic(errColor)
 	}
 
 	fmt.Printf("Creating Slack adapter with filter: %v\n", messageFilter)
