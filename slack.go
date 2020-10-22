@@ -40,6 +40,9 @@ func getenv() map[string]string {
 // NewSlackAdapter creates a Slack adapter.
 func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 	slackWebhook := getopt("SLACK_WEBHOOK_URL", route.Address)
+	if !strings.HasPrefix(slackWebhook, "https://") {
+		slackWebhook = "https://" + slackWebhook
+	}
 	messageFilter := getopt("SLACK_MESSAGE_FILTER", ".*?")
 	titleTemplateExpression := getopt("SLACK_TITLE_TEMPLATE", "{{ .Message.Container.Name}}")
 	messageTemplateExpression := getopt("SLACK_MESSAGE_TEMPLATE", "{{ .Message.Data}}")
