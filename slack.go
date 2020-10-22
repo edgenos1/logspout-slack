@@ -109,14 +109,17 @@ func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 			if errColor := a.colorTemplate.Execute(&buffer, context); errColor == nil {
 			    color = buffer.String()
 			}
+			buffer.Reset()
 			title := "[ALERT] Logspout"
 			if errTitle := a.titleTemplate.Execute(&buffer, context); errTitle == nil {
 			    title = buffer.String()
 			}
+			buffer.Reset()
 			link := ""
 			if errLink := a.linkTemplate.Execute(&buffer, context); errLink == nil {
 			    link = buffer.String()
 			}
+			buffer.Reset()
 			message := message.Data
 			if errMesssage := a.messageTemplate.Execute(&buffer, context); errMesssage == nil {
 			    message = buffer.String()
