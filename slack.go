@@ -65,7 +65,7 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 		panic(errColor)
 	}
 
-	fmt.Printf("Creating Slack adapter on webhook %V with filter %v\n", slackWebhook, messageFilter)
+	fmt.Printf("Creating Slack adapter on webhook %v with filter %v\n", slackWebhook, messageFilter)
 	return &SlackAdapter{
 		slackWebhook:   	slackWebhook,
 		messageFilter: 		messageFilter,
