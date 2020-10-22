@@ -68,15 +68,15 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 type SlackAdapter struct {
 	slackWebhook  	string
 	messageFilter 	string
-	titleTemplate	*Template
-	messageTemplate	*Template
-	linkTemplate	*Template
-	colorTemplate	*Template
+	titleTemplate	*template.Template
+	messageTemplate	*template.Template
+	linkTemplate	*template.Template
+	colorTemplate	*template.Template
 	route         	*router.Route
 }
 
 type Context struct {
-	Message 	*Message
+	Message 	*router.Message
 	Env     	*map[string]string
 }
 
