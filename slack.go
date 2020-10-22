@@ -40,27 +40,24 @@ func getenv() map[string]string {
 // NewSlackAdapter creates a Slack adapter.
 func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 	slackWebhook := getopt("SLACK_WEBHOOK_URL", route.Address)
-	messageFilter := getopt("SLACK_MESSAGE_FILTER", route.Options["slack_message_filter"])
-	if messageFilter == "" {
-		messageFilter = ".*?"
-	}
+	messageFilter := getopt("SLACK_MESSAGE_FILTER", ".*?")
 	titleTemplateExpression := getopt("SLACK_TITLE_TEMPLATE", "{{ .Message.Container.Name}}")
 	messageTemplateExpression := getopt("SLACK_MESSAGE_TEMPLATE", "{{ .Message.Data}}")
 	linkTemplateExpression := getopt("SLACK_LINK_TEMPLATE", "")
 	colorTemplateExpression := getopt("SLACK_COLOR_TEMPLATE", "danger")
-	titleTemplate, errTitle := template.New("title").Parse(titleTemplate)
+	titleTemplate, errTitle := template.New("title").Parse(titleTemplateExpression)
 	if errTitle != nil {
 		panic(errTitle)
 	}
-	messageTemplate, errMessage := template.New("message").Parse(messageTemplate)
+	messageTemplate, errMessage := template.New("message").Parse(messageTemplateExpression)
 	if errMessage != nil {
 		panic(errMessage)
 	}
-	linkTemplate, errLink := template.New("link").Parse(messageTemplate)
+	linkTemplate, errLink := template.New("link").Parse(linkTemplateExpression)
 	if errLink != nil {
 		panic(errLink)
 	}
-	colorTemplate, errColor := template.New("color").Parse(messageTemplate)
+	colorTemplate, errColor := template.New("color").Parse(colorTemplateExpression)
 	if errColor != nil {
 		panic(errColor)
 	}
@@ -105,14 +102,14 @@ func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 			fmt.Printf("Sending slack message: %+v\n", message.Data)
 			var buffer bytes.Buffer
 			context := Context{
-				Message: &msg,
+				Message: &message,
 				Env: &env,
 			}
 			attachment := slack.Attachment{
-				Color:		a.colorTemplate(&buffer, Context),
-				Title:		a.titleTemplate(&buffer, Context),
-				TitleLink:	a.linkTemplate(&buffer, Context),
-				Text:		a.messageTemplate(&buffer, Context),
+				Color:		a.colorTemplate(&buffer, context),
+				Title:		a.titleTemplate(&buffer, context),
+				TitleLink:	a.linkTemplate(&buffer, context),
+				Text:		a.messageTemplate(&buffer, context),
 			}
 			msg := slack.WebhookMessage{
 				Attachments: []slack.Attachment{attachment},
