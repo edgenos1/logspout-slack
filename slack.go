@@ -100,16 +100,33 @@ func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 		fmt.Printf("Filtering message for slack: %+v\n", message.Data)
 		if ok, _ := regexp.MatchString(a.messageFilter, message.Data); ok {
 			fmt.Printf("Sending slack message: %+v\n", message.Data)
-			var buffer bytes.Buffer
 			context := Context{
 				Message: message,
 				Env: &env,
 			}
+			var buffer bytes.Buffer
+			color := "danger"
+			if errColor := a.colorTemplate.Execute(&buffer, context); errColor == nil {
+			    color = buffer.String()
+			}
+			title := "[ALERT] Logspout"
+			if errTitle := a.titleTemplate.Execute(&buffer, context); errTitle == nil {
+			    title = buffer.String()
+			}
+			link := ""
+			if errLink := a.linkTemplate.Execute(&buffer, context); errLink == nil {
+			    link = buffer.String()
+			}
+			message := message.Data
+			if errMesssage := a.messageTemplate.Execute(&buffer, context); errMesssage == nil {
+			    message = buffer.String()
+			}
+			
 			attachment := slack.Attachment{
-				Color:		a.colorTemplate.Execute(&buffer, context),
-				Title:		a.titleTemplate.Execute(&buffer, context),
-				TitleLink:	a.linkTemplate.Execute(&buffer, context),
-				Text:		a.messageTemplate.Execute(&buffer, context),
+				Color:		color,
+				Title:		title,
+				TitleLink:	link,
+				Text:		message,
 			}
 			msg := slack.WebhookMessage{
 				Attachments: []slack.Attachment{attachment},
