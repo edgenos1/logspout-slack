@@ -29,8 +29,8 @@ func getenv() map[string]string {
         items := make(map[string]string)
         for _, item := range os.Environ() {
 		splits := strings.Split(item, "=")
-            	key = splits[0]
-        	value = splits[1]
+		key := splits[0]
+		value := splits[1]
             	items[key] = value
         }
         return items
@@ -43,14 +43,27 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 	if messageFilter == "" {
 		messageFilter = ".*?"
 	}
+	var err
 	titleTemplate := getopt("SLACK_TITLE_TEMPLATE", "{{ .Message.Container.Name}}")
 	messageTemplate := getopt("SLACK_MESSAGE_TEMPLATE", "{{ .Message.Data}}")
 	linkTemplate := getopt("SLACK_LINK_TEMPLATE", "")
 	colorTemplate := getopt("SLACK_COLOR_TEMPLATE", "danger")
-	titleTemplate = template.New("title").Parse(titleTemplate)
-	messageTemplate = template.New("message").Parse(messageTemplate)
-	linkTemplate = template.New("link").Parse(messageTemplate)
-	colorTemplate = template.New("color").Parse(messageTemplate)
+	titleTemplate, err = template.New("title").Parse(titleTemplate)
+	if err != nil {
+		panic(err)
+	}
+	messageTemplate, err = template.New("message").Parse(messageTemplate)
+	if err != nil {
+		panic(err)
+	}
+	linkTemplate, err = template.New("link").Parse(messageTemplate)
+	if err != nil {
+		panic(err)
+	}
+	colorTemplate, err = template.New("color").Parse(messageTemplate)
+	if err != nil {
+		panic(err)
+	}
 
 	fmt.Printf("Creating Slack adapter with filter: %v\n", messageFilter)
 	return &SlackAdapter{
