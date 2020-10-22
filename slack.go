@@ -43,7 +43,7 @@ func NewSlackAdapter(route *router.Route) (router.LogAdapter, error) {
 	if messageFilter == "" {
 		messageFilter = ".*?"
 	}
-	var err
+	var err error
 	titleTemplate := getopt("SLACK_TITLE_TEMPLATE", "{{ .Message.Container.Name}}")
 	messageTemplate := getopt("SLACK_MESSAGE_TEMPLATE", "{{ .Message.Data}}")
 	linkTemplate := getopt("SLACK_LINK_TEMPLATE", "")
