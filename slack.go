@@ -102,14 +102,14 @@ func (a *SlackAdapter) Stream(logstream chan *router.Message) {
 			fmt.Printf("Sending slack message: %+v\n", message.Data)
 			var buffer bytes.Buffer
 			context := Context{
-				Message: &message,
+				Message: message,
 				Env: &env,
 			}
 			attachment := slack.Attachment{
-				Color:		a.colorTemplate(&buffer, context),
-				Title:		a.titleTemplate(&buffer, context),
-				TitleLink:	a.linkTemplate(&buffer, context),
-				Text:		a.messageTemplate(&buffer, context),
+				Color:		a.colorTemplate.Execute(&buffer, context),
+				Title:		a.titleTemplate.Execute(&buffer, context),
+				TitleLink:	a.linkTemplate.Execute(&buffer, context),
+				Text:		a.messageTemplate.Execute(&buffer, context),
 			}
 			msg := slack.WebhookMessage{
 				Attachments: []slack.Attachment{attachment},
