@@ -31,6 +31,7 @@ Run the container like this:
 ```
 docker run --name="logspout" \
 	--volume=/var/run/docker.sock:/var/run/docker.sock \
+	your configuration options (see below)
 	logspout:v3.2.11 \
 	slack://hooks.slack.com
 ```
@@ -48,8 +49,8 @@ services:
       - /etc/hostname:/etc/host_hostname:ro
       - /var/run/docker.sock:/var/run/docker.sock
     environment:
-      - SLACK_WEBHOOK_URL=${LOGSPOUT_SLACK_WEBHOOK_URL}
-      - SLACK_MESSAGE_FILTER=${LOGSPOUT_SLACK_MESSAGE_FILTER}
+      - SLACK_WEBHOOK_URL=/services/xxx
+      - SLACK_MESSAGE_FILTER=".*?"
       - BACKLOG=false
     healthcheck:
       test: ["CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:80/health"]
@@ -89,20 +90,31 @@ docker run --name="logspout" \
 
 *Note: you must URL-encode parameter values such as the comma and the name filter is not a regex but rather a [path pattern](https://godoc.org/path#Match)*
 
-You can set your webhook URL using the `SLACK_WEBHOOK_URL` environment variable:
+You can set your webhook URL/path using the `SLACK_WEBHOOK_URL` environment variable:
 ```
-docker run --name="logspout" \
-	--volume=/var/run/docker.sock:/var/run/docker.sock \
-	-e SLACK_WEBHOOK_URL="xxx" \
-	logspout:v3.2.11 \
-	slack://hooks.slack.com
+docker run --name="logspout" -e SLACK_WEBHOOK_URL="/services/xxx" ...
 ```
 
 You can filter the messages to be sent to Slack using a [regex](https://godoc.org/regexp#Regexp.MatchString) in the `SLACK_MESSAGE_FILTER` environment variable:
 ```
-docker run --name="logspout" \
-	--volume=/var/run/docker.sock:/var/run/docker.sock \
-	-e SLACK_MESSAGE_FILTER=".*error" \
-	logspout:v3.2.11 \
-	slack://hooks.slack.com
+docker run -e SLACK_MESSAGE_FILTER=".*error" ...
 ```
+
+Then you can customize how you format the notifications using the following environment variables containing Go [template expressions](https://golang.org/pkg/text/template/):
+* `SLACK_TITLE_TEMPLATE`: notification title
+* `SLACK_LINK_TEMPLATE`: notification title link
+* `SLACK_MESSAGE_TEMPLATE`:  notification content
+* `SLACK_COLOR_TEMPLATE`:  notification color
+
+The evaluation context of the different templates includes the following objects:
+* `Message`: the Logspout router message, which owns a lot of information about the container in addition to the log content itself as Datafield (please refer to the associated Go types for details)
+* `Env`: a map of environment variables you can access using the index function in your template to extract some information from your specific environment setup
+
+Here are some examples:
+```
+SLACK_TITLE_TEMPLATE={{ .Message.Container.Name }}
+SLACK_MESSAGE_TEMPLATE={{ .Message.Data }}
+SLACK_LINK_TEMPLATE=https://app.{{ index .Env "SUBDOMAIN" }}
+```
+
+*``Note: take care to enclose your template expressions between `{{ and `}} in Docker compose file because Docker Swarm processes variables as template expressions as well.``*
