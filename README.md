@@ -117,4 +117,4 @@ SLACK_MESSAGE_TEMPLATE={{ .Message.Data }}
 SLACK_LINK_TEMPLATE=https://app.{{ index .Env "SUBDOMAIN" }}
 ```
 
-*``Note: take care to enclose your template expressions between `{{ and `}} in Docker compose file because Docker Swarm processes variables as template expressions as well.``*
+*``Note: take care to enclose your template expressions between `{{ and `}} in Docker compose file because Docker Swarm processes variables as template expressions as well.`` (see this [issue](https://github.com/gliderlabs/logspout/issues/273))*
